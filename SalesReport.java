@@ -4,7 +4,7 @@ public class SalesReport {
     private boolean shouldApplyDiscount;
     private String reportName;
 
-
+    private static final double DISCOUNT_RATE = 0.1;
 
     public SalesReport(List<double[]> sales, boolean shouldApplyDiscount, String reportName) {
         this.sales = sales;
@@ -15,13 +15,13 @@ public class SalesReport {
     public String generateReport() {
         double total = calculateTotal();
 
-
         if (shouldApplyDiscount) {
-            total = DiscountCalculator.applyDiscount(total);
+            total = applyDiscount(total);
         }
 
-        String status = StatusCalculator.determineStatus(total);
-        return ReportBuilder.buildReport(reportName, total, status);
+        String status = determineStatus(total);
+
+        return buildReport(total, status);
     }
 
     private double calculateTotal() {
@@ -32,9 +32,23 @@ public class SalesReport {
         return total;
     }
 
+    private double applyDiscount(double total) {
+        return total - (total * DISCOUNT_RATE);
+    }
 
+    private String determineStatus(double total) {
+        if (total > 10000) {
+            return "A";
+        } else if (total > 5000) {
+            return "B";
+        } else {
+            return "C";
+        }
+    }
 
-
-
-
+    private String buildReport(double total, String status) {
+        return "Relatorio: " + reportName + "\n" +
+               "Total: " + total + "\n" +
+               "STATUS: " + status;
+    }
 }
